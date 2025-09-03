@@ -21,7 +21,7 @@
   </style>
 </head>
 <body>
-	<div style="width:25%; margin-left:auto; margin-right:auto; border: 1px solid black; background:aliceblue;">
+	<div style="width:fit-content; height: fit-content; margin-left:auto; margin-right:auto; border: 1px solid black; background:aliceblue;">
 		  <div id="Configuration" style="margin:2em;">
 			<div style="font-style:italic; font-size:x-large;text-align: center;"><strong> Math Worksheet Setup </strong>
 			</div>
@@ -33,7 +33,8 @@
 			 <br />
 			 <br /> 
 				Show Answers? 
-				<input type="checkbox" id="answers" style="float: right;">    <br />
+				<input type="checkbox" id="answers" style="float: right;">    
+			<br />
 			<br /> 
 				Number of Problems?
 				<input type="Number" id="NumProb" size="5" onchange="NewConfig()" style="float: right; text-align: right; width:105px;">   
