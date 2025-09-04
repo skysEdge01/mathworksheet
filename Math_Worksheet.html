@@ -1,0 +1,169 @@
+<html>
+<head>
+  <title>Math Worksheet</title>
+  <style>
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #Worksheet * {
+        visibility: visible;
+      }
+      #Worksheet, #TBL {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 93%;
+        height: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+	<div style="width:fit-content; height: fit-content; margin-left:auto; margin-right:auto; border: 1px solid black; background:aliceblue;">
+		  <div id="Configuration" style="margin:2em;">
+			<div style="font-style:italic; font-size:xx-large;text-align: center;"><equationong> Math Worksheet Setup </equationong>
+			</div>
+			<div style="font-style:italic;text-align: center;">(Use .5" Margins)
+			</div>
+			<br /> 
+				Largest Number on Top? 
+				<input type="checkbox" id="ReMax" value="ReMax" checked onchange="NewConfig()" style="float: right;">    
+			<br />
+			<br /> 
+				Show Answers? 
+				<input type="checkbox" id="answers" style="float: right;">    
+			<br />
+			<br /> 
+				Number of Problems?
+				<input type="Number" id="NumProb" size="5" onchange="NewConfig()" style="float: right; text-align: right; width:105px;">   
+			<br />
+			<br /> 
+				Number of Columns?
+				<input type="Number" id="ColPage" size="5" onchange="NewConfig()" style="float: right; text-align: right; width:105px;">    
+			<br />
+			<br /> 
+				Minimum Values?
+				<input type="Number" id="MinVal" size="5" onchange="NewConfig()" style="float: right; text-align: right; width:105px;">    
+			<br />
+			<br /> 
+				Maximum Values?
+				<input type="Number" id="MaxVal" size="5" onchange="NewConfig()" style="float: right; text-align: right; width:105px;">    
+			<br />
+			<br /> 
+				Type of Equations?
+				<select name="MathAction" id="MathAction" style="float: right; text-align: right; width:105px;">
+					<option value="addition">Addition</option>
+					<option value="subtraction">Subtraction</option>
+					<option value="multiplication">Multiplication</option>
+					<option value="division">Division</option>
+				</select>   
+		  </div> <!-- end Configuration -->
+		  <div id="Buttons" style="margin:2em;">
+				<button onclick="GenerateNum()" style="width:-webkit-fill-available; width:-moz-available;">Generate Numbers</button>
+				<br />
+				<br />
+				<button onclick="GenerateWS()" style="width:-webkit-fill-available; width:-moz-available;">Generate Worksheet</button>
+				<br />
+				<br />
+				<button onclick="window.print()" style="width:-webkit-fill-available; width:-moz-available;">Print Math Worksheet</button>
+		  </div> <!-- end Buttons -->
+	</div>
+	<br />
+	<br />
+	<div id="Worksheet"></div> <!-- this is the generated math worksheet -->
+</body>
+
+<script type="text/javascript">
+
+let LargerOnTop = true;
+let NumberOfProblems = 50;
+let ColumnsOnPage = 5;
+let MinimumValue = 1;
+let MaximumValue = 999;
+
+document.getElementById("NumProb").value = NumberOfProblems;
+document.getElementById("ColPage").value = ColumnsOnPage;
+document.getElementById("MinVal").value = MinimumValue;
+document.getElementById("MaxVal").value = MaximumValue;
+document.getElementById("ReMax").value = LargerOnTop;
+
+function RandomSet() {
+  for (let i=0; i<NumberOfProblems; i++) {
+    // random numbers in the range from MinimumValue to MaximumValue
+    xvals[i] = (Math.floor(Math.random() * (MaximumValue - MinimumValue + 1)) + parseInt(MinimumValue));
+    if (LargerOnTop === true) {
+      yvals[i] = (Math.floor(Math.random() * (xvals[i] - MinimumValue + 1)) + parseInt(MinimumValue));
+    } else {
+      // LargerOnTop === false; // pick any in-range random value
+      yvals[i] = (Math.floor(Math.random() * (MaximumValue - MinimumValue + 1)) + parseInt(MinimumValue));
+    }
+  }
+}
+
+let xvals = [];
+let yvals = [];
+RandomSet(); // the only call that works without parseInt
+
+function GenerateNum() {
+	xvals.length = 0;
+	yvals.length = 0;
+	RandomSet();
+	document.getElementById('Worksheet').style.display="none";
+}
+
+function MakeTable(equations) {
+  let solution = '';
+  let equation = '<table width="1000em" id="TBL" style="padding-right: 2em; padding-top: 2em; padding-bottom: 2em; margin-left: auto;margin-right: auto; font-family: sans-serif; font-size: larger;"><tr>';
+  i = 0;
+  
+  while (i < NumberOfProblems) {
+    x = xvals[i];
+    y = yvals[i];
+    equation += '<td align="right">'+x;
+    if (equations == 'addition') {equation += '<br><u> + &nbsp &nbsp'+ y + '</u>'; solution = x+y;}
+    if (equations == 'subtraction') {equation += '<br><u> - &nbsp &nbsp'+ y + '</u>'; solution = x-y;}
+    if (equations == 'multiplication') {equation += '<br><u> x &nbsp &nbsp'+ y + '</u>'; solution = x*y;}
+    if (equations == 'division') {equation += '<br><u> ÷ &nbsp &nbsp'+ y + '</u>'; solution = (x/y).toFixed(2);}
+    equation;
+    if (document.getElementById('answers').checked) { 
+		equation += '<br>'+solution; 
+		}
+    else { 
+		equation += '<br>&nbsp;' 
+		}
+    equation += '<br>&nbsp;</td>';
+    i++;  
+    if ((i % ColumnsOnPage) == 0) { equation += '</tr><tr>'; }
+  }  
+  equation += '</tr></table>';
+  return equation;
+}
+
+function GenerateWS() {
+  let x = 0
+  let y = 0
+  let equation = '';
+  let sel = document.getElementById('MathAction').value;
+  switch (sel) {
+    case 'addition' : equation += MakeTable(sel); break;
+    case 'subtraction' : equation += MakeTable(sel); break;
+    case 'multiplication' : equation += MakeTable(sel); break;
+    case 'division' : equation += MakeTable(sel); break;
+    default : alert('No choice selected'); break;
+  }
+  document.getElementById('Worksheet').innerHTML = equation;
+  document.getElementById('Worksheet').style.display="contents";
+}
+
+function NewConfig() {
+  NumberOfProblems = document.getElementById("NumProb").value;
+  ColumnsOnPage = document.getElementById("ColPage").value;
+  MinimumValue = document.getElementById("MinVal").value;
+  MaximumValue = document.getElementById("MaxVal").value;
+  LargerOnTop = document.getElementById("ReMax").checked;
+}
+
+</script>
+</body>
+</html>
